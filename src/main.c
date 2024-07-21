@@ -6,7 +6,7 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 18:00:12 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/21 17:58:37 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/21 18:52:44 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 void	free_matrix(char ***matrix)
 {
-	int i = 0;
-	
+	int i;
+
+	i = 0;
 	while((*matrix)[i])
 	{
 		free((*matrix)[i]);
@@ -39,13 +40,19 @@ char *ft_getenv(char *env[], char *var)
 	return (NULL);
 }
 
-char *ft_find_program(char *env[], char *program_name)
+char *ft_find_program(char *env[], char *program)
 {
-	char *full_path = ft_getenv(env, "PATH");
-	char **paths = ft_split(ft_strchr(full_path, '=') + 1, ':');
-	int i = 0;
-	char *program_path = ft_strjoin(paths[i], program_name);
-
+	char *full_path; 
+	char **paths;
+	char *program_path;
+	char *program_name;
+	int i;
+	
+	full_path= ft_getenv(env, "PATH");
+	paths = ft_split(ft_strchr(full_path, '=') + 1, ':');
+	i = 0;
+	program_name = ft_strjoin("/", program);
+	program_path = ft_strjoin(paths[i], program_name);
 	while(access(program_path, F_OK) != 0 && paths[i])
 	{
 		free(program_path);
@@ -53,7 +60,12 @@ char *ft_find_program(char *env[], char *program_name)
 		program_path = ft_strjoin(paths[i], program_name);
 	}
 	if(paths[i])
-		return(free_matrix(&paths), program_path);
+	{
+		free_matrix(&paths);
+		free(program_name);
+		return(program_path);
+		
+	}
 	//error
 	return(NULL);
 }
@@ -77,7 +89,7 @@ int main(int argc, char *argv[], char *env[])
 			char *program_path = ft_find_program(env, argv[1]);
 			if(program_path)
 			{
-				ft_printf(" %s \n", program_path);
+				execve(program_path, argv + 1, env);
 				free(program_path);
 			}
 			return (0);
