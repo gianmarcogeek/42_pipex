@@ -6,11 +6,13 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 18:00:12 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/21 18:52:44 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/21 19:40:21 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
+
+//use with ./pipex "ls -l ./lib"
 
 void	free_matrix(char ***matrix)
 {
@@ -84,12 +86,13 @@ int main(int argc, char *argv[], char *env[])
 		else if (pid == 0)
 		{
 			//child
-			//look inside argv[1] for program name
-			//program_path = ft_find_path(env, argv[1]);
-			char *program_path = ft_find_program(env, argv[1]);
+			// int infile = open(argv[1], O_RDWR);
+			// dup2(infile, 0);
+			char **argus = ft_split(argv[1], ' ');
+			char *program_path = ft_find_program(env, argus[0]);
 			if(program_path)
 			{
-				execve(program_path, argv + 1, env);
+				execve(program_path, argus, env);
 				free(program_path);
 			}
 			return (0);

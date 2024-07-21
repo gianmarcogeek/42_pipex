@@ -6,7 +6,7 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 20:22:10 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/18 15:19:28 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/21 19:14:33 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,6 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 #endif
