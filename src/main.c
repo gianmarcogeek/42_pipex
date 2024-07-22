@@ -6,7 +6,7 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 18:00:12 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/21 19:40:21 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/21 19:49:26 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@ int main(int argc, char *argv[], char *env[])
 		else if (pid == 0)
 		{
 			//child
-			// int infile = open(argv[1], O_RDWR);
-			// dup2(infile, 0);
-			char **argus = ft_split(argv[1], ' ');
+			int infile = open(argv[1], O_RDWR);
+			dup2(infile, 0);
+			char **argus = ft_split(argv[2], ' ');
 			char *program_path = ft_find_program(env, argus[0]);
 			if(program_path)
 			{
