@@ -6,7 +6,7 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 18:00:12 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/22 16:29:37 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/22 16:52:01 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,6 @@ char *ft_find_program(char *env[], char *program)
 	exit(1);
 }
 
-int parent_main()
-{
-	wait(NULL);
-	ft_printf("tornato al processo padre!\n");
-	return(0);
-}
-
 int main(int argc, char *argv[], char *env[])
 {
 	if(argc == 5)
@@ -114,11 +107,11 @@ int main(int argc, char *argv[], char *env[])
 		}
 		else
 		{
+			wait(NULL);
 			pid_t fork2 = fork();
 			if(fork2 == 0)
 			{
-				int outfile = open(argv[3], O_RDWR);
-				dup2(outfile, 1);
+				int outfile = open(argv[4], O_RDWR);
 				close(fd[1]);
 				dup2(fd[0], 0);
 				close(fd[0]);
@@ -128,11 +121,17 @@ int main(int argc, char *argv[], char *env[])
 					char *program_path = ft_find_program(env, argus[0]);
 				if(program_path)
 				{
+					dup2(outfile, 1);
 					execve(program_path, argus, env);
 					free(program_path);
 				}
+					return(0);
 				}
 			}
+			
+
+			ft_printf("tornato al processo padre!\n");
+			return(0);
 			}
 			return (0);
 		}
