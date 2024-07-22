@@ -6,20 +6,18 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 18:00:12 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/21 19:49:26 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/22 16:29:37 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
-
-//use with ./pipex "ls -l ./lib"
 
 void	free_matrix(char ***matrix)
 {
 	int i;
 
 	i = 0;
-	while((*matrix)[i])
+	while ((*matrix)[i])
 	{
 		free((*matrix)[i]);
 		i++;
@@ -27,7 +25,7 @@ void	free_matrix(char ***matrix)
 	free(*matrix);
 }
 
-char *ft_getenv(char *env[], char *var)
+char	*ft_getenv(char *env[], char *var)
 {
 	int i;
 
@@ -38,8 +36,9 @@ char *ft_getenv(char *env[], char *var)
 			return(env[i]);
 		i++;
 	}
-	//error
-	return (NULL);
+
+	perror("Env search error");
+	exit(1);
 }
 
 char *ft_find_program(char *env[], char *program)
@@ -68,41 +67,76 @@ char *ft_find_program(char *env[], char *program)
 		return(program_path);
 		
 	}
-	//error
-	return(NULL);
+
+	perror("Program not found");
+	exit(1);
+}
+
+int parent_main()
+{
+	wait(NULL);
+	ft_printf("tornato al processo padre!\n");
+	return(0);
 }
 
 int main(int argc, char *argv[], char *env[])
 {
-	if(argc && argv)
+	if(argc == 5)
 	{
-		pid_t pid = fork();
+		pid_t fork1;
+		int fd[2];
 
-		if (pid < 0)
+		fork1 = 0;
+		pipe(fd);
+		fork1 = fork();
+		if (fork1 < 0)
 		{
 			perror("Fork() failed.\n");
 			exit(1);
 		}
-		else if (pid == 0)
+		else if (fork1 == 0)
 		{
-			//child
 			int infile = open(argv[1], O_RDWR);
 			dup2(infile, 0);
-			char **argus = ft_split(argv[2], ' ');
-			char *program_path = ft_find_program(env, argus[0]);
-			if(program_path)
+			close(fd[0]);
+			dup2(fd[1], 1);
+			close(fd[1]);
+			if(argv[2])
 			{
-				execve(program_path, argus, env);
-				free(program_path);
-			}
-			return (0);
+				char **argus = ft_split(argv[2], ' ');
+				char *program_path = ft_find_program(env, argus[0]);
+				if(program_path)
+				{
+					execve(program_path, argus, env);
+					free(program_path);
+				}
+			}	
 		}
 		else
 		{
-			//parent
-			wait(NULL);
-			ft_printf("tornato al processo padre!\n");
-			return(0);
+			pid_t fork2 = fork();
+			if(fork2 == 0)
+			{
+				int outfile = open(argv[3], O_RDWR);
+				dup2(outfile, 1);
+				close(fd[1]);
+				dup2(fd[0], 0);
+				close(fd[0]);
+				if(argv[2])
+				{
+				char **argus = ft_split(argv[3], ' ');
+					char *program_path = ft_find_program(env, argus[0]);
+				if(program_path)
+				{
+					execve(program_path, argus, env);
+					free(program_path);
+				}
+				}
+			}
+			}
+			return (0);
 		}
-	}
+	
+	perror("Error use './pipex infile cmd1'");
+	exit(-1);
 }
