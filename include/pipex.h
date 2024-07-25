@@ -6,7 +6,7 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 20:22:10 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/21 19:14:33 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:52:22 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,12 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <errno.h>
+
+void	ft_error(char *error_msg);
+void	free_matrix(char ***matrix);
+char	*ft_getenv(char *env[], char *var);
+char	*ft_find_program(char *env[], char *program);
+void	subprocess(char *cmd, char *env[]);
 
 #endif
