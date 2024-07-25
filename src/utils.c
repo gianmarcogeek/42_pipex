@@ -6,7 +6,7 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 17:34:19 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/25 17:56:26 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:14:42 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,4 +89,5 @@ void	subprocess(char *cmd, char *env[])
 	execve(program_path, program_args, env);
 	ft_error("Program does not exist");
 	//free(program_path)
+	//free_matrix(program_args)
 }
