@@ -4,7 +4,7 @@ GREEN = \033[92m
 RESET = \033[0m
 
 NAME = pipex
-CC = gcc -g
+CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 SRC_DIR = ./src
@@ -23,7 +23,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo "Compiling $<"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME): $(OBJS) $(LIBFT_A) $(FT_PRINTF_A)
+$(NAME): $(LIBFT_A) $(FT_PRINTF_A) $(OBJS)
 	@echo "Linking..."
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) $(FT_PRINTF_A) -o $(NAME)
 	@echo "$(BOLD)$(GREEN)$(NAME) compiled successfully!$(RESET)"

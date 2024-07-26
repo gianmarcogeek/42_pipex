@@ -6,16 +6,16 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 18:06:08 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/25 17:54:03 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/26 12:29:36 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-static void child_main(int fd[], char *argv[], char *env[])
+static void	child_main(int fd[], char *argv[], char *env[])
 {
-	int infile;
-	
+	int	infile;
+
 	close(fd[0]);
 	infile = open(argv[1], O_RDONLY);
 	if (infile == -1)
@@ -26,12 +26,13 @@ static void child_main(int fd[], char *argv[], char *env[])
 	close(infile);
 	subprocess(argv[2], env);
 }
-int main(int argc, char *argv[], char *env[])
+
+int	main(int argc, char *argv[], char *env[])
 {
-	pid_t fork_id;
-	int fd[2];
-	int outfile;
-	
+	pid_t	fork_id;
+	int		fd[2];
+	int		outfile;
+
 	if (argc != 5)
 		ft_error("Error! use './pipex infile cmd1 cmd2 outfile'");
 	if (pipe(fd) == -1)
