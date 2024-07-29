@@ -6,7 +6,7 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 17:34:19 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/26 12:59:01 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/26 13:30:49 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 void	ft_error(char *error_msg)
 {
-	if()
-	if (errno)
+		if (errno)
 		perror(error_msg);
 	else
 		ft_putendl_fd(error_msg, 2);
@@ -63,12 +62,13 @@ char	*ft_find_program(char *env[], char *program)
 	paths = ft_split(ft_strchr(full_path, '=') + 1, ':');
 	i = 0;
 	program_name = ft_strjoin("/", program);
-	program_path = ft_strjoin(paths[i], program_name);
-	while (access(program_path, F_OK) != 0 && paths[i])
+	while (paths[i])
 	{
+		program_path = ft_strjoin(paths[i], program_name);
+		if(access(program_path, F_OK) == 0)
+			return(program_path);
 		free(program_path);
 		i++;
-		program_path = ft_strjoin(paths[i], program_name);
 	}
 	if (!paths[i] || !paths)
 	{
