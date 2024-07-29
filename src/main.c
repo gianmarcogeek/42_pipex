@@ -6,7 +6,7 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 18:06:08 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/26 13:36:45 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/29 13:04:06 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	child_main(int fd[], char *argv[], char *env[])
 	close(fd[0]);
 	infile = open(argv[1], O_RDONLY);
 	if (infile == -1)
-		ft_error("Error while opening input file");
+		ft_error("Error while opening input file!");
 	dup2(infile, 0);
 	dup2(fd[1], 1);
 	close(fd[1]);
@@ -29,11 +29,12 @@ static void	child_main(int fd[], char *argv[], char *env[])
 
 static void	parent_main(int fd[], char *argv[], char *env[])
 {
-	int outfile;
+	int	outfile;
 
+	close(fd[1]);
 	outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	if (outfile == -1)
-		ft_error("Error while opening output file");
+		ft_error("Error while creating output file!");
 	dup2(fd[0], 0);
 	dup2(outfile, 1);
 	close(fd[0]);
@@ -45,19 +46,21 @@ int	main(int argc, char *argv[], char *env[])
 {
 	pid_t	fork_id;
 	int		fd[2];
+	int		status;
 
-	fork_id = fork();
-
-	//creare una funzione di error handling con codice di errore
-	if (argc != 5)
-		ft_error("Error! use './pipex infile cmd1 cmd2 outfile'");
-	if (pipe(fd) == -1)
-		ft_error("Error while creating pipe");
-	if (fork_id < 0)
-		ft_error("Error while forking main process");
-	if (fork_id == 0)
-		child_main(fd, argv, env);
-	wait(NULL);
-	close(fd[1]);
-	parent_main(fd, argv, env);
+	if (argc == 5)
+	{
+		if (pipe(fd) == -1)
+			ft_error("Error while creating the pipe!");
+		fork_id = fork();
+		if (fork_id < 0)
+			ft_error("Error while forking the main process!");
+		if (fork_id == 0)
+			child_main(fd, argv, env);
+		waitpid(-1, &status, 0);
+		if (WEXITSTATUS(status))
+			exit(1);
+		parent_main(fd, argv, env);
+	}
+	ft_error("Error! Use './pipex infile cmd1 cmd2 outfile'");
 }

@@ -6,7 +6,7 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 17:34:19 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/26 13:30:49 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/29 12:58:25 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_error(char *error_msg)
 {
-		if (errno)
+	if (errno)
 		perror(error_msg);
 	else
 		ft_putendl_fd(error_msg, 2);
@@ -58,25 +58,20 @@ char	*ft_find_program(char *env[], char *program)
 
 	full_path = ft_getenv(env, "PATH");
 	if (!full_path)
-		ft_error("Error while searching env path");
+		ft_error("Error while searching env 'PATH' variable!");
 	paths = ft_split(ft_strchr(full_path, '=') + 1, ':');
-	i = 0;
 	program_name = ft_strjoin("/", program);
+	i = 0;
 	while (paths[i])
 	{
 		program_path = ft_strjoin(paths[i], program_name);
-		if(access(program_path, F_OK) == 0)
-			return(program_path);
+		if (access(program_path, F_OK) == 0)
+			return (program_path);
 		free(program_path);
 		i++;
 	}
-	if (!paths[i] || !paths)
-	{
-		free(program_path);
-		program_path = NULL;
-	}
 	free_matrix(&paths);
-	return (free(program_name), program_path);
+	return (free(program_name), NULL);
 }
 
 void	subprocess(char *cmd, char *env[])
@@ -84,19 +79,13 @@ void	subprocess(char *cmd, char *env[])
 	char	**program_args;
 	char	*program_path;
 
+	if (!cmd || !*cmd || ft_iswhitespace(*cmd))
+		ft_error("Error invalid program!");
 	program_args = ft_split(cmd, ' ');
 	program_path = ft_find_program(env, program_args[0]);
-	if (!program_path)
-	{
-		free_matrix(&program_args);
-		free(program_path);
-		ft_error("Error program not found");
-	}
-	else
-	{
+	if (program_path)
 		execve(program_path, program_args, env);
-		free_matrix(&program_args);
-		free(program_path);
-		ft_error("Program does not exist");
-	}
+	free_matrix(&program_args);
+	free(program_path);
+	ft_error("Error while executing program!");
 }
