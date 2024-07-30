@@ -6,7 +6,7 @@
 /*   By: gpuscedd <gpuscedd@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 18:06:08 by gpuscedd          #+#    #+#             */
-/*   Updated: 2024/07/29 13:04:06 by gpuscedd         ###   ########.fr       */
+/*   Updated: 2024/07/30 20:42:51 by gpuscedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,9 @@ static void	child_main(int fd[], char *argv[], char *env[])
 	subprocess(argv[2], env);
 }
 
-static void	parent_main(int fd[], char *argv[], char *env[])
+static void	parent_main(int fd[], char *argv[], char *env[], int outfile)
 {
-	int	outfile;
-
 	close(fd[1]);
-	outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0664);
-	if (outfile == -1)
-		ft_error("Error while creating output file!");
 	dup2(fd[0], 0);
 	dup2(outfile, 1);
 	close(fd[0]);
@@ -47,9 +42,13 @@ int	main(int argc, char *argv[], char *env[])
 	pid_t	fork_id;
 	int		fd[2];
 	int		status;
+	int		outfile;
 
 	if (argc == 5)
 	{
+		outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0664);
+		if (outfile == -1)
+			ft_error("Error while creating output file!");
 		if (pipe(fd) == -1)
 			ft_error("Error while creating the pipe!");
 		fork_id = fork();
@@ -60,7 +59,7 @@ int	main(int argc, char *argv[], char *env[])
 		waitpid(-1, &status, 0);
 		if (WEXITSTATUS(status))
 			exit(1);
-		parent_main(fd, argv, env);
+		parent_main(fd, argv, env, outfile);
 	}
 	ft_error("Error! Use './pipex infile cmd1 cmd2 outfile'");
 }
